@@ -94,19 +94,6 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// Validação do formulário de contato
-const contactForm = document.querySelector('.contact-form');
-contactForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    // Aqui você pode adicionar a lógica para enviar o formulário
-    const formData = new FormData(this);
-    
-    // Exemplo de mensagem de sucesso
-    alert('Mensagem enviada com sucesso! Entraremos em contato em breve.');
-    this.reset();
-});
-
 // Menu mobile
 const createMobileMenu = () => {
     const nav = document.querySelector('.nav-container');
