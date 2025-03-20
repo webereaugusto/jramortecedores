@@ -613,7 +613,7 @@ section h2 {
 /* Ajustes responsivos */
 @media (max-width: 768px) {
     .nav-container {
-        flex-direction: row;
+        flex-direction: row-reverse;
         justify-content: space-between;
         align-items: center;
         padding: 0.5rem 1rem;
