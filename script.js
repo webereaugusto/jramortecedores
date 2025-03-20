@@ -157,6 +157,14 @@ const createMobileMenu = () => {
 
 createMobileMenu();
 
+// Fecha o menu mobile quando um item é clicado
+document.querySelectorAll('.nav-menu a').forEach(link => {
+    link.addEventListener('click', () => {
+        const menu = document.querySelector('.nav-menu');
+        menu.classList.remove('active');
+    });
+});
+
 // Adiciona efeito de parallax no hero e outras seções com parallax
 const parallaxSections = document.querySelectorAll('.hero, .parallax-section, .parts-section, .tools-section');
 
