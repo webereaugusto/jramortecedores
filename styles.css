@@ -2014,13 +2014,7 @@ section h2 {
 
 @media (max-width: 768px) {
     .social-sidebar {
-        top: auto;
-        bottom: 85px;
-        left: 0;
-        flex-direction: row;
-        padding: 8px 15px;
-        border-radius: 0 20px 20px 0;
-        gap: 10px;
+        display: none; /* Oculta completamente a barra lateral em dispositivos móveis */
     }
     
     .social-sidebar a {
