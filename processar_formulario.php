@@ -1,6 +1,6 @@
 <?php
 // Configurações do e-mail
-$para = "jramortecedores@gmail.com"; // Substitua pelo seu e-mail
+$para = "weber.augusto@gmail.com, jramortecedores@gmail.com"; // Múltiplos destinatários
 $assunto = "Nova mensagem do formulário de contato - JR Amortecedores";
 
 // Recebe os dados do formulário
