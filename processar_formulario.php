@@ -20,9 +20,23 @@ $nome = filter_input(INPUT_POST, 'nome', FILTER_SANITIZE_STRING);
 $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
 $telefone = filter_input(INPUT_POST, 'telefone', FILTER_SANITIZE_STRING);
 $mensagem = filter_input(INPUT_POST, 'mensagem', FILTER_SANITIZE_STRING);
+$captchaAnswer = filter_input(INPUT_POST, 'captchaAnswer', FILTER_SANITIZE_STRING);
+$captchaExpected = filter_input(INPUT_POST, 'captchaExpected', FILTER_SANITIZE_STRING);
 
 // Registra a tentativa de envio
 registrarLog("Nova tentativa de envio - De: $email");
+
+// Verifica o captcha
+if ($captchaAnswer !== $captchaExpected) {
+    registrarLog("Falha na validação do captcha - De: $email", 'AVISO');
+    $resposta = array(
+        'status' => 'erro',
+        'mensagem' => 'Validação de segurança falhou. Por favor, tente novamente.'
+    );
+    header('Content-Type: application/json');
+    echo json_encode($resposta);
+    exit;
+}
 
 // Verifica se os campos obrigatórios foram preenchidos
 if (!empty($nome) && !empty($email) && !empty($mensagem)) {

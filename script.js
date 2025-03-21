@@ -306,12 +306,43 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+// Função para gerar números aleatórios para o captcha
+function gerarNumeroCaptcha(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+// Função para gerar novo captcha
+function gerarCaptcha() {
+    const num1 = gerarNumeroCaptcha(1, 10);
+    const num2 = gerarNumeroCaptcha(1, 10);
+    const resultado = num1 + num2;
+    
+    document.getElementById('captchaQuestion').textContent = `Quanto é ${num1} + ${num2}? `;
+    document.getElementById('captchaExpected').value = resultado;
+    document.getElementById('captchaAnswer').value = '';
+}
+
+// Gerar captcha inicial quando a página carregar
+document.addEventListener('DOMContentLoaded', gerarCaptcha);
+
 // Processamento do formulário de contato
 document.getElementById('contactForm').addEventListener('submit', function(e) {
     e.preventDefault();
     
     const form = this;
     const formMessage = document.getElementById('formMessage');
+    const captchaAnswer = document.getElementById('captchaAnswer').value;
+    const captchaExpected = document.getElementById('captchaExpected').value;
+    
+    // Validar captcha
+    if (captchaAnswer !== captchaExpected) {
+        formMessage.textContent = 'Resposta incorreta. Por favor, tente novamente.';
+        formMessage.className = 'form-message error';
+        formMessage.style.display = 'block';
+        gerarCaptcha(); // Gerar novo captcha
+        return;
+    }
+    
     const submitButton = form.querySelector('button[type="submit"]');
     const originalButtonText = submitButton.textContent;
     
@@ -334,9 +365,10 @@ document.getElementById('contactForm').addEventListener('submit', function(e) {
         formMessage.className = 'form-message ' + (data.status === 'sucesso' ? 'success' : 'error');
         formMessage.style.display = 'block';
         
-        // Se foi sucesso, limpa o formulário
+        // Se foi sucesso, limpa o formulário e gera novo captcha
         if (data.status === 'sucesso') {
             form.reset();
+            gerarCaptcha();
         }
     })
     .catch(error => {

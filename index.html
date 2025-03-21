@@ -512,6 +512,11 @@
                 <input type="email" name="email" placeholder="E-mail" required>
                 <input type="tel" name="telefone" placeholder="Telefone" required>
                 <textarea name="mensagem" placeholder="Mensagem" required></textarea>
+                <div class="captcha-container">
+                    <label id="captchaQuestion">Quanto é </label>
+                    <input type="number" name="captchaAnswer" id="captchaAnswer" required>
+                    <input type="hidden" name="captchaExpected" id="captchaExpected">
+                </div>
                 <button type="submit" class="submit-button">Enviar Mensagem</button>
             </form>
         </div>
