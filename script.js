@@ -304,4 +304,49 @@ document.addEventListener('DOMContentLoaded', function() {
     if (accordionHeaders.length > 0) {
         accordionHeaders[0].parentElement.classList.add('active');
     }
+});
+
+// Processamento do formulário de contato
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const form = this;
+    const formMessage = document.getElementById('formMessage');
+    const submitButton = form.querySelector('button[type="submit"]');
+    const originalButtonText = submitButton.textContent;
+    
+    // Desabilita o botão e mostra loading
+    submitButton.disabled = true;
+    submitButton.textContent = 'Enviando...';
+    
+    // Prepara os dados do formulário
+    const formData = new FormData(form);
+    
+    // Envia o formulário
+    fetch(form.action, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Mostra a mensagem de resposta
+        formMessage.textContent = data.mensagem;
+        formMessage.className = 'form-message ' + (data.status === 'sucesso' ? 'success' : 'error');
+        formMessage.style.display = 'block';
+        
+        // Se foi sucesso, limpa o formulário
+        if (data.status === 'sucesso') {
+            form.reset();
+        }
+    })
+    .catch(error => {
+        formMessage.textContent = 'Erro ao enviar mensagem. Por favor, tente novamente mais tarde.';
+        formMessage.className = 'form-message error';
+        formMessage.style.display = 'block';
+    })
+    .finally(() => {
+        // Reabilita o botão
+        submitButton.disabled = false;
+        submitButton.textContent = originalButtonText;
+    });
 }); 

@@ -506,7 +506,8 @@
                     <a href="https://www.google.com/maps?client=firefox-b-d&um=1&ie=UTF-8&fb=1&gl=br&sa=X&geocode=KQE6ICDfzsiUMXcbfldimjlz&daddr=Av.+Dr.+Arlindo+Joaquim+de+Lemos,+285+-+Jardim+Proenca+I,+Campinas+-+SP,+13100-450" target="_blank" class="cta-button map-button"><i class="fas fa-map-marked-alt"></i> Como Chegar</a>
                 </div>
             </div>
-            <form class="contact-form" action="https://formspree.io/f/jramortecedores@gmail.com" method="POST">
+            <form class="contact-form" id="contactForm" action="processar_formulario.php" method="POST">
+                <div id="formMessage" class="form-message" style="display: none;"></div>
                 <input type="text" name="nome" placeholder="Nome" required>
                 <input type="email" name="email" placeholder="E-mail" required>
                 <input type="tel" name="telefone" placeholder="Telefone" required>
