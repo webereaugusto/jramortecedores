@@ -1,6 +1,13 @@
 <?php
+require 'vendor/autoload.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 // Configurações do e-mail
-$para = "weber.augusto@gmail.com, jramortecedores@gmail.com"; // Múltiplos destinatários
+$destinatarios = [
+    "jramortecedores@gmail.com"
+];
 $assunto = "Nova mensagem do formulário de contato - JR Amortecedores";
 
 // Função para registrar logs
@@ -40,26 +47,54 @@ if ($captchaAnswer !== $captchaExpected) {
 
 // Verifica se os campos obrigatórios foram preenchidos
 if (!empty($nome) && !empty($email) && !empty($mensagem)) {
-    // Monta o corpo do e-mail
-    $corpo = "Nome: " . $nome . "\n";
-    $corpo .= "E-mail: " . $email . "\n";
-    $corpo .= "Telefone: " . $telefone . "\n\n";
-    $corpo .= "Mensagem:\n" . $mensagem;
+    // Configuração do PHPMailer
+    $mail = new PHPMailer(true);
 
-    // Headers do e-mail
-    $headers = "From: " . $email . "\r\n";
-    $headers .= "Reply-To: " . $email . "\r\n";
-    $headers .= "X-Mailer: PHP/" . phpversion();
+    try {
+        // Configurações do servidor
+        $mail->isSMTP();
+        $mail->Host = 'smtp.titan.email';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'contato@jramortecedores.com.br';
+        $mail->Password = 'Piolho1234!';
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+        $mail->Port = 465;
+        $mail->CharSet = 'UTF-8';
 
-    // Tenta enviar o e-mail
-    if (mail($para, $assunto, $corpo, $headers)) {
-        registrarLog("E-mail enviado com sucesso - De: $email Para: $para", 'SUCESSO');
+        // Remetente
+        $mail->setFrom('contato@jramortecedores.com.br', 'JR Amortecedores - Formulário de Contato');
+        $mail->addReplyTo($email, $nome);
+        
+        // Destinatários
+        foreach ($destinatarios as $destinatario) {
+            $mail->addAddress($destinatario);
+        }
+
+        // Conteúdo
+        $mail->isHTML(true);
+        $mail->Subject = $assunto;
+        
+        // Corpo do e-mail em HTML
+        $corpoHTML = "
+        <h2>Nova mensagem do formulário de contato</h2>
+        <p><strong>Nome:</strong> {$nome}</p>
+        <p><strong>E-mail:</strong> {$email}</p>
+        <p><strong>Telefone:</strong> {$telefone}</p>
+        <h3>Mensagem:</h3>
+        <p>" . nl2br(htmlspecialchars($mensagem)) . "</p>
+        ";
+        
+        $mail->Body = $corpoHTML;
+        $mail->AltBody = "Nome: {$nome}\nE-mail: {$email}\nTelefone: {$telefone}\n\nMensagem:\n{$mensagem}";
+
+        $mail->send();
+        registrarLog("E-mail enviado com sucesso - De: $email Para: " . implode(', ', $destinatarios), 'SUCESSO');
         $resposta = array(
             'status' => 'sucesso',
             'mensagem' => 'Mensagem enviada com sucesso! Entraremos em contato em breve.'
         );
-    } else {
-        registrarLog("Erro ao enviar e-mail - De: $email Para: $para", 'ERRO');
+    } catch (Exception $e) {
+        registrarLog("Erro ao enviar e-mail - De: $email - Erro: {$mail->ErrorInfo}", 'ERRO');
         $resposta = array(
             'status' => 'erro',
             'mensagem' => 'Erro ao enviar mensagem. Por favor, tente novamente mais tarde.'
